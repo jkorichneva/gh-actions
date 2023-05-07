@@ -1,0 +1,33 @@
+name: 'Run reusable workflow'
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Pass necessary environment'
+        required: true
+        type: string
+    outputs:
+      result:
+        description: 'Result string'
+        value:  ${{ jobs.first-job.outputs.result }}
+      
+jobs:
+  first-job:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.version.outputs.value }}
+    steps:
+       - uses: actions/checkout@v3
+       
+       - name: Demonstrating how github environment and secrets.GITHUB_TOKEN is shared in reusable workflows
+         run: echo ${{ github.actor }}
+         
+       - name: Running a step only if condition is true
+         if: inputs.environment == 'production'
+         run: echo 'This is production environment'
+         
+       - name: Exporting values from reusable workflow
+         id: result-step
+         run: echo "value='Result string from reusable workflow'" >> $GITHUB_OUTPUT
+        
+      
