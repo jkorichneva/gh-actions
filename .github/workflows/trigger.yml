@@ -10,12 +10,14 @@ jobs:
       environment: 'production'
       
   result-output:
+    runs-on: ubuntu-20.04
     needs: reusable
     steps:
       - name: 'Print reusable workflow output'
         run: echo  ${{ needs.reusable.outputs.result }}
       
   composite:
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         with:
