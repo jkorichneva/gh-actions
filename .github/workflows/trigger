@@ -1,0 +1,34 @@
+name: Trigger
+
+on:
+  workflow_dispatch:
+jobs:
+  reusable:
+    uses: ./.github/workflows/reusable-workflow.yml
+    secrets: inherit
+    with:
+      environment: 'production'
+      
+  result-output:
+    needs: reusable
+    steps:
+      - name: 'Print reusable workflow output'
+        run: echo  ${{ needs.reusable.outputs.result }}
+      
+  composite:
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/composite
+        id: composite
+        name: 'calling composite action'
+        with:
+          who-to-greet: 'me'
+          
+      - name: 'Print composite output'
+        run: echo ${{ steps.composite.outputs.random-number }}
+        
+    
+  
